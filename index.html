@@ -1,102 +1,86 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2299.77">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="UTF-8">
+  <title>Ride Scheduler</title>
+  <style>
+    .row { margin-bottom: 10px; }
+    input { margin: 5px; }
+    button { margin: 10px 0; }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Ride Scheduler&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.row { margin-bottom: 10px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>input { margin: 5px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>button { margin: 10px 0; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;h2&gt;Ride Booking Form&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;form id="rideForm"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="formRows"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="passenger" placeholder="Passenger" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="date" name="date" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="time" name="time" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="pickup" placeholder="Pick Up" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="dropoff" placeholder="Drop Off" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button type="button" onclick="addRow()"&gt;+ Add Row&lt;/button&gt;&lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button type="submit"&gt;Submit&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/form&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const scriptURL = 'https://script.google.com/macros/s/AKfycbxmgHxAMzIr5wO68JApQDOAUWUYCjn4hLMf2idMsD3AjSK4C5loZZLZbFtQwrMdxMOJ/exec'; // Replace with your Apps Script Web App URL</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function addRow() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const container = document.getElementById("formRows");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const newRow = document.createElement("div");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>newRow.className = "row";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>newRow.innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="passenger" placeholder="Passenger" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="date" name="date" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="time" name="time" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="pickup" placeholder="Pick Up" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" name="dropoff" placeholder="Drop Off" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>container.appendChild(newRow);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("rideForm").addEventListener("submit", function(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>e.preventDefault();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>const rows = document.querySelectorAll(".row");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const data = Array.from(rows).map(row =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const inputs = row.querySelectorAll("input");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>passenger: inputs[0].value,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>date: inputs[1].value,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>time: inputs[2].value,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>pickup: inputs[3].value,</p>
-<p class="p1"><span class="Apple-converted-space">          </span>dropoff: inputs[4].value</p>
-<p class="p1"><span class="Apple-converted-space">        </span>};</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>fetch(scriptURL, {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>method: "POST",</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify(data),</p>
-<p class="p1"><span class="Apple-converted-space">        </span>headers: { "Content-Type": "application/json" }</p>
-<p class="p1"><span class="Apple-converted-space">      </span>})</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.then(response =&gt; response.text())</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.then(result =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>alert("Rides created successfully!");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("rideForm").reset();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("formRows").innerHTML = `</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="row"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="passenger" placeholder="Passenger" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="date" name="date" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="time" name="time" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="pickup" placeholder="Pick Up" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="text" name="dropoff" placeholder="Drop Off" required&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>})</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.catch(error =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>alert("Error: " + error);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>console.error(error);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <h2>Ride Booking Form</h2>
+  <form id="rideForm">
+    <div id="formRows">
+      <div class="row">
+        <input type="text" name="passenger" placeholder="Passenger" required>
+        <input type="date" name="date" required>
+        <input type="time" name="time" required>
+        <input type="text" name="pickup" placeholder="Pick Up" required>
+        <input type="text" name="dropoff" placeholder="Drop Off" required>
+      </div>
+    </div>
+    <button type="button" onclick="addRow()">+ Add Row</button><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const scriptURL = 'YOUR_WEB_APP_URL_HERE'; // Replace with your Apps Script Web App URL
+
+    function addRow() {
+      const container = document.getElementById("formRows");
+      const newRow = document.createElement("div");
+      newRow.className = "row";
+      newRow.innerHTML = `
+        <input type="text" name="passenger" placeholder="Passenger" required>
+        <input type="date" name="date" required>
+        <input type="time" name="time" required>
+        <input type="text" name="pickup" placeholder="Pick Up" required>
+        <input type="text" name="dropoff" placeholder="Drop Off" required>
+      `;
+      container.appendChild(newRow);
+    }
+
+    document.getElementById("rideForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const rows = document.querySelectorAll(".row");
+      const data = Array.from(rows).map(row => {
+        const inputs = row.querySelectorAll("input");
+        return {
+          passenger: inputs[0].value,
+          date: inputs[1].value,
+          time: inputs[2].value,
+          pickup: inputs[3].value,
+          dropoff: inputs[4].value
+        };
+      });
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.text())
+      .then(result => {
+        alert("Rides created successfully!");
+        document.getElementById("rideForm").reset();
+        document.getElementById("formRows").innerHTML = `
+          <div class="row">
+            <input type="text" name="passenger" placeholder="Passenger" required>
+            <input type="date" name="date" required>
+            <input type="time" name="time" required>
+            <input type="text" name="pickup" placeholder="Pick Up" required>
+            <input type="text" name="dropoff" placeholder="Drop Off" required>
+          </div>
+        `;
+      })
+      .catch(error => {
+        alert("Error: " + error);
+        console.error(error);
+      });
+    });
+  </script>
 </body>
 </html>
