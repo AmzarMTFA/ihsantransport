@@ -1,88 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Passenger Form</title>
+  <meta charset="UTF-8">
+  <title>Booking Form</title>
+  <style>
+    table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+    .sub-passenger { margin-left: 20px; }
+  </style>
 </head>
 <body>
-  <h1>Ride Booking Form</h1>
 
-  <table id="rideTable" border="1">
-    <thead>
-      <tr>
-        <th>Passenger</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Pick Up</th>
-        <th>Drop Off</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="rideBody">
-      <tr>
-        <td><input type="text" name="passenger" /></td>
-        <td><input type="date" name="date" /></td>
-        <td><input type="time" name="time" /></td>
-        <td><input type="text" name="pickup" /></td>
-        <td><input type="text" name="dropoff" /></td>
-        <td><button onclick="removeRow(this)">❌</button></td>
-      </tr>
-    </tbody>
-  </table>
+<h2>Ride Booking Form</h2>
+<label for="bookedBy">Your Name:</label>
+<input type="text" id="bookedBy" required><br><br>
 
-  <button onclick="addRow()">➕ Add Row</button>
-  <button onclick="submitData()">🚀 Submit</button>
+<table id="bookingTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Pickup</th>
+      <th>Dropoff</th>
+      <th>Passengers</th>
+      <th>Add/Remove</th>
+    </tr>
+  </thead>
+  <tbody id="bookingBody">
+  </tbody>
+</table>
 
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxmgHxAMzIr5wO68JApQDOAUWUYCjn4hLMf2idMsD3AjSK4C5loZZLZbFtQwrMdxMOJ/exec";
+<br>
+<button onclick="addRow()">+ Add Ride</button>
+<button onclick="submitData()">Submit</button>
 
-    function addRow() {
-      const table = document.getElementById("rideBody");
-      const newRow = table.rows[0].cloneNode(true);
-      newRow.querySelectorAll("input").forEach(input => input.value = "");
-      table.appendChild(newRow);
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbxmgHxAMzIr5wO68JApQDOAUWUYCjn4hLMf2idMsD3AjSK4C5loZZLZbFtQwrMdxMOJ/exec";
+
+function addRow() {
+  const tbody = document.getElementById("bookingBody");
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td><input type="date" required></td>
+    <td><input type="time" required></td>
+    <td><input type="text" placeholder="Pickup location" required></td>
+    <td><input type="text" placeholder="Dropoff location" required></td>
+    <td>
+      <div class="passengers">
+        <input type="text" placeholder="Passenger name" required>
+      </div>
+      <button type="button" onclick="addPassenger(this)">+ Passenger</button>
+    </td>
+    <td><button type="button" onclick="this.closest('tr').remove()">Remove</button></td>
+  `;
+
+  tbody.appendChild(row);
+}
+
+function addPassenger(button) {
+  const container = button.previousElementSibling;
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "Passenger name";
+  input.classList.add("sub-passenger");
+  container.appendChild(input);
+}
+
+function submitData() {
+  const bookedBy = document.getElementById("bookedBy").value.trim();
+  if (!bookedBy) {
+    alert("Please enter your name.");
+    return;
+  }
+
+  const rows = document.querySelectorAll("#bookingBody tr");
+  const rides = [];
+
+  rows.forEach(row => {
+    const date = row.cells[0].querySelector("input").value;
+    const time = row.cells[1].querySelector("input").value;
+    const pickup = row.cells[2].querySelector("input").value;
+    const dropoff = row.cells[3].querySelector("input").value;
+
+    const passengerInputs = row.cells[4].querySelectorAll("input");
+    const passengers = Array.from(passengerInputs).map(input => input.value.trim()).filter(name => name);
+
+    if (date && time && pickup && dropoff && passengers.length > 0) {
+      rides.push({ date, time, pickup, dropoff, passengers });
     }
+  });
 
-    function removeRow(button) {
-      const row = button.parentElement.parentElement;
-      const table = document.getElementById("rideBody");
-      if (table.rows.length > 1) {
-        table.removeChild(row);
-      }
-    }
+  if (rides.length === 0) {
+    alert("Please add at least one valid booking.");
+    return;
+  }
 
-    function submitData() {
-      const rows = document.querySelectorAll("#rideBody tr");
-      const payload = [];
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ bookedBy, rides })
+  })
+  .then(() => alert("Booking submitted successfully!"))
+  .catch(err => alert("Error: " + err.message));
+}
+</script>
 
-      rows.forEach(row => {
-        const passenger = row.querySelector('input[name="passenger"]').value;
-        const date = row.querySelector('input[name="date"]').value;
-        const time = row.querySelector('input[name="time"]').value;
-        const pickup = row.querySelector('input[name="pickup"]').value;
-        const dropoff = row.querySelector('input[name="dropoff"]').value;
-
-        if (passenger && date && time && pickup && dropoff) {
-          payload.push({ passenger, date, time, pickup, dropoff });
-        }
-      });
-
-      if (payload.length === 0) {
-        alert("Please fill in at least one complete row.");
-        return;
-      }
-
-      fetch(scriptURL, {
-        method: "POST",
-        mode: "no-cors", // Silences CORS errors
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      alert("Submitted! (Events should appear in your calendar shortly)");
-    }
-  </script>
 </body>
 </html>
