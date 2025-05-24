@@ -1,86 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ride Scheduler</title>
-  <style>
-    .row { margin-bottom: 10px; }
-    input { margin: 5px; }
-    button { margin: 10px 0; }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Passenger Form</title>
 </head>
 <body>
-  <h2>Ride Booking Form</h2>
-  <form id="rideForm">
-    <div id="formRows">
-      <div class="row">
-        <input type="text" name="passenger" placeholder="Passenger" required>
-        <input type="date" name="date" required>
-        <input type="time" name="time" required>
-        <input type="text" name="pickup" placeholder="Pick Up" required>
-        <input type="text" name="dropoff" placeholder="Drop Off" required>
-      </div>
-    </div>
-    <button type="button" onclick="addRow()">+ Add Row</button><br>
-    <button type="submit">Submit</button>
-  </form>
+  <h1>Ride Booking Form</h1>
+
+  <table id="rideTable" border="1">
+    <thead>
+      <tr>
+        <th>Passenger</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Pick Up</th>
+        <th>Drop Off</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="rideBody">
+      <tr>
+        <td><input type="text" name="passenger" /></td>
+        <td><input type="date" name="date" /></td>
+        <td><input type="time" name="time" /></td>
+        <td><input type="text" name="pickup" /></td>
+        <td><input type="text" name="dropoff" /></td>
+        <td><button onclick="removeRow(this)">❌</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button onclick="addRow()">➕ Add Row</button>
+  <button onclick="submitData()">🚀 Submit</button>
 
   <script>
-    const scriptURL = 'YOUR_WEB_APP_URL_HERE'; // Replace with your Apps Script Web App URL
+    const scriptURL = "https://script.google.com/macros/s/PASTE_YOUR_SCRIPT_DEPLOY_URL_HERE/exec";
 
     function addRow() {
-      const container = document.getElementById("formRows");
-      const newRow = document.createElement("div");
-      newRow.className = "row";
-      newRow.innerHTML = `
-        <input type="text" name="passenger" placeholder="Passenger" required>
-        <input type="date" name="date" required>
-        <input type="time" name="time" required>
-        <input type="text" name="pickup" placeholder="Pick Up" required>
-        <input type="text" name="dropoff" placeholder="Drop Off" required>
-      `;
-      container.appendChild(newRow);
+      const table = document.getElementById("rideBody");
+      const newRow = table.rows[0].cloneNode(true);
+      newRow.querySelectorAll("input").forEach(input => input.value = "");
+      table.appendChild(newRow);
     }
 
-    document.getElementById("rideForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    function removeRow(button) {
+      const row = button.parentElement.parentElement;
+      const table = document.getElementById("rideBody");
+      if (table.rows.length > 1) {
+        table.removeChild(row);
+      }
+    }
 
-      const rows = document.querySelectorAll(".row");
-      const data = Array.from(rows).map(row => {
-        const inputs = row.querySelectorAll("input");
-        return {
-          passenger: inputs[0].value,
-          date: inputs[1].value,
-          time: inputs[2].value,
-          pickup: inputs[3].value,
-          dropoff: inputs[4].value
-        };
+    function submitData() {
+      const rows = document.querySelectorAll("#rideBody tr");
+      const payload = [];
+
+      rows.forEach(row => {
+        const passenger = row.querySelector('input[name="passenger"]').value;
+        const date = row.querySelector('input[name="date"]').value;
+        const time = row.querySelector('input[name="time"]').value;
+        const pickup = row.querySelector('input[name="pickup"]').value;
+        const dropoff = row.querySelector('input[name="dropoff"]').value;
+
+        if (passenger && date && time && pickup && dropoff) {
+          payload.push({ passenger, date, time, pickup, dropoff });
+        }
       });
+
+      if (payload.length === 0) {
+        alert("Please fill in at least one complete row.");
+        return;
+      }
 
       fetch(scriptURL, {
         method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => response.text())
-      .then(result => {
-        alert("Rides created successfully!");
-        document.getElementById("rideForm").reset();
-        document.getElementById("formRows").innerHTML = `
-          <div class="row">
-            <input type="text" name="passenger" placeholder="Passenger" required>
-            <input type="date" name="date" required>
-            <input type="time" name="time" required>
-            <input type="text" name="pickup" placeholder="Pick Up" required>
-            <input type="text" name="dropoff" placeholder="Drop Off" required>
-          </div>
-        `;
-      })
-      .catch(error => {
-        alert("Error: " + error);
-        console.error(error);
+        mode: "no-cors", // Silences CORS errors
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-    });
+
+      alert("Submitted! (Events should appear in your calendar shortly)");
+    }
   </script>
 </body>
 </html>
