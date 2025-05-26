@@ -10,7 +10,7 @@
   <table id="rideTable" border="1">
     <thead>
       <tr>
-        <th>Officer Requesting</th>
+        <th>Requestor</th>
         <th>Passenger</th>
         <th>Date</th>
         <th>Time</th>
@@ -21,6 +21,7 @@
     </thead>
     <tbody id="rideBody">
       <tr>
+         <td><input type="text" name="requestor" /></td>
         <td><input type="text" name="passenger" /></td>
         <td><input type="date" name="date" /></td>
         <td><input type="time" name="time" /></td>
@@ -57,6 +58,7 @@
       const payload = [];
 
       rows.forEach(row => {
+        const passenger = row.querySelector('input[name="requestor"]').value;
         const passenger = row.querySelector('input[name="passenger"]').value;
         const date = row.querySelector('input[name="date"]').value;
         const time = row.querySelector('input[name="time"]').value;
